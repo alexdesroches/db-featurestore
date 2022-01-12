@@ -515,13 +515,6 @@ mlflow.lightgbm.log_model(
 
 # COMMAND ----------
 
-mlflow.lightgbm.log_model(
-        lgb_model=model,
-        artifact_path=model_uri,
-        registered_model_name="taxi_example_fare_packaged_aks")
-
-# COMMAND ----------
-
 # MAGIC %md ## Scoring: Batch Inference
 
 # COMMAND ----------
@@ -612,15 +605,15 @@ from mlflow.tracking import MlflowClient
 subscription_id = '6369c148-f8a9-4fb5-8a9d-ac1b2c8e756e'
 
 # Azure Machine Learning resource group NOT the managed resource group
-resource_group = 'adr-tests' 
+resource_group = 'adr-azure' 
 
 #Azure Machine Learning workspace name, NOT Azure Databricks workspace
-workspace_name = 'alexdesroches-aml-01'  
+workspace_name = 'adr-aml-01'  
 
 # Instantiate Azure Machine Learning workspace
 azure_workspace = Workspace.get(name=workspace_name,
-                   subscription_id=subscription_id,
-                   resource_group=resource_group)
+                                subscription_id=subscription_id,
+                                resource_group=resource_group)
 
 # COMMAND ----------
 
@@ -636,8 +629,8 @@ aci_config = AciWebservice.deploy_configuration(cpu_cores=1, memory_gb=1)
 
 # COMMAND ----------
 
-latest_model_version = get_latest_model_version("taxi_example_fare_packaged_nofeaturemeta")
-model_uri = f"models:/taxi_example_fare_packaged_nofeaturemeta/{latest_model_version}"
+latest_model_version = get_latest_model_version("taxi_example_fare_packaged_aci")
+model_uri = f"models:/taxi_example_fare_packaged_aci/{latest_model_version}"
 
 # COMMAND ----------
 
@@ -645,11 +638,10 @@ model_uri = f"models:/taxi_example_fare_packaged_nofeaturemeta/{latest_model_ver
 
 (webservice, model) = mlflow.azureml.deploy(model_uri=model_uri,
                                             workspace=azure_workspace,
-                                            model_name='taxi_example_fare_packaged_nofeaturemeta',
+                                            model_name='taxi_example_fare_packaged_aci',
                                             service_name='taxi-service-aci',
                                             deployment_config=aci_config)
 
 # After the model deployment completes, requests can be posted via HTTP to the new ACI
 # webservice's scoring URI. The following example posts a sample input from the wine dataset
 print("Scoring URI is: %s", webservice.scoring_uri)
-

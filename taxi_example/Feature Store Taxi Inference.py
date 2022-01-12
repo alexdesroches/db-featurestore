@@ -3,6 +3,7 @@
 # MAGIC # Inference Functions
 
 # COMMAND ----------
+
 import os
 os.environ['DATABRICKS_TOKEN'] =""
 
@@ -157,7 +158,7 @@ def create_tf_serving_json(data):
 
 def score_model_db_endpoint(dataset):
   #url = 'https://adb-5419940489217457.17.azuredatabricks.net/model/taxi_example_fare_packaged/3/invocations'
-  url = "https://adb-5419940489217457.17.azuredatabricks.net/model/taxi_example_fare_packaged_nofeaturemeta/1/invocations"
+  url = "https://adb-5419940489217457.17.azuredatabricks.net/model/taxi_example_fare_packaged_aci/1/invocations"
   headers = {'Authorization': f'Bearer {os.environ.get("DATABRICKS_TOKEN")}'}
   data_json = dataset.to_dict(orient='split') if isinstance(dataset, pd.DataFrame) else create_tf_serving_json(dataset)
   print(data_json)
@@ -171,7 +172,7 @@ def score_model_db_endpoint(dataset):
 
 def score_model_aci_endpoint(dataset):
   #url = 'https://adb-5419940489217457.17.azuredatabricks.net/model/taxi_example_fare_packaged/3/invocations'
-  url = "http://4d09120b-de01-4a0b-a439-44d5acbbe4b8.eastus.azurecontainer.io/score"
+  url = "http://26fd0e14-ad50-4497-a653-010704814f92.canadacentral.azurecontainer.io/score"
   # headers = {'Authorization': f'Bearer {os.environ.get("DATABRICKS_TOKEN")}'}
   headers = {}
   data_json = dataset.to_dict(orient='split') if isinstance(dataset, pd.DataFrame) else create_tf_serving_json(dataset)
@@ -218,7 +219,7 @@ dataset = create_scoring_dataset_withnometa()
 
 # COMMAND ----------
 
-response, response_json = score_model_db_endpoint(dataset)
+response, response_json = score_model_aci_endpoint(dataset)
 
 # COMMAND ----------
 
@@ -231,3 +232,7 @@ response2, response_json2 = score_model_aci_endpoint(dataset)
 # COMMAND ----------
 
 response2.text
+
+# COMMAND ----------
+
+
